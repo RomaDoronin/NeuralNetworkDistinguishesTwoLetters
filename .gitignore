@@ -1,0 +1,26 @@
+# VS
+/.vs/
+/x64/
+/tmp/
+/build/
+/bin/
+/obj/
+/Properties/
+
+# Additional
+/bitmap/
+
+*.sln
+*.VC.db
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.csproj
+ 
+# Builds
+*.dll
+*.iobj
+*.ipdb
+*.pdb
+*.exe
+App.config
