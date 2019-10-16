@@ -8,9 +8,14 @@ namespace Perzeptron
 {
     public class PerNetWork
     {
+        // Class Field
         private List<List<float>> _weight;
-        private const int GRID_SIZE = 34;
 
+        // Class Constant
+        private const int GRID_SIZE = 34;
+        private const float EDUCATION_SPEED = 0.2f;
+
+        // Constructor
         public PerNetWork()
         {
             _weight = new List<List<float>>();
@@ -26,18 +31,24 @@ namespace Perzeptron
             }
         }
 
-        private int Sgnm(float num)
+        // Get Set
+        public int GetGridSize()
         {
-            if (num >= 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return -1;
-            }
+            return GRID_SIZE;
         }
 
+        // Internal Function
+        private int ThresholdFunc(float s1)
+        {
+            return MathFunc.Sgnm(s1);
+        }
+
+        private float ActiveFunc(float inputSignal, int i, int j)
+        {
+            return inputSignal * _weight[i][j]; ;
+        }
+
+        // Interface Function
         public int RunIteration(List<List<float>> grid)
         {
             float s1 = 0;
@@ -45,7 +56,7 @@ namespace Perzeptron
             {
                 for (int j = 0; j < grid[i].Count; j++)
                 {
-                    s1 += grid[i][j] * _weight[i][j];
+                    s1 += ActiveFunc(grid[i][j], i, j);
                 }
             }
 
@@ -53,10 +64,38 @@ namespace Perzeptron
 
             s1 -= t1;
 
-            return Sgnm(s1);
+            return ThresholdFunc(s1);
         }
 
-        public string PrintWeight()
+        public void IncWeight(List<List<float>> grid)
+        {
+            for (int i = 0; i < grid.Count; i++)
+            {
+                for (int j = 0; j < grid[i].Count; j++)
+                {
+                    if (grid[i][j] == 1)
+                    {
+                        _weight[i][j] += EDUCATION_SPEED;
+                    }
+                }
+            }
+        }
+
+        public void DecWeight(List<List<float>> grid)
+        {
+            for (int i = 0; i < grid.Count; i++)
+            {
+                for (int j = 0; j < grid[i].Count; j++)
+                {
+                    if (grid[i][j] == 1)
+                    {
+                        _weight[i][j] -= EDUCATION_SPEED;
+                    }
+                }
+            }
+        }
+
+        public override string ToString()
         {
             string weightStr = "";
 
@@ -71,34 +110,6 @@ namespace Perzeptron
             }
 
             return weightStr;
-        }
-
-        public void IncWeight(List<List<float>> grid)
-        {
-            for (int i = 0; i < grid.Count; i++)
-            {
-                for (int j = 0; j < grid[i].Count; j++)
-                {
-                    if (grid[i][j] == 1)
-                    {
-                        _weight[i][j] += 0.2f;
-                    }
-                }
-            }
-        }
-
-        public void DecWeight(List<List<float>> grid)
-        {
-            for (int i = 0; i < grid.Count; i++)
-            {
-                for (int j = 0; j < grid[i].Count; j++)
-                {
-                    if (grid[i][j] == 1)
-                    {
-                        _weight[i][j] -= 0.2f;
-                    }
-                }
-            }
         }
     }
 }

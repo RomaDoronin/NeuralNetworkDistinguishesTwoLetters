@@ -12,11 +12,8 @@ namespace Perzeptron
 {
     public partial class Form1 : Form
     {
-        private const string Filename = "C:\\Users\\Roma\\source\\repos\\Perzeptron\\Perzeptron\\bitmap\\latter.png";
-        private Color penColor;
         private int penWidth;
-        private const int GRID_SIZE = 34;
-
+        private int gridSize;
         private bool isPressed;
         private Point currentPoint;
         private Point prevPoint;
@@ -32,11 +29,11 @@ namespace Perzeptron
 
         public Form1()
         {
-            gridG = new List<List<float>>();
-            penColor = Color.Black;
             penWidth = 2;
+            gridG = new List<List<float>>();
             isPressed = false;
             perNetWork = new PerNetWork();
+            gridSize = perNetWork.GetGridSize();
 
             InitializeComponent();
 
@@ -62,7 +59,7 @@ namespace Perzeptron
             {
                 for (int j = y - penWidth; j <= y + penWidth; j++)
                 {
-                    screenshot.SetPixel(i, j, penColor);
+                    screenshot.SetPixel(i, j, Color.Black);
                 }
             }
         }
@@ -191,12 +188,8 @@ namespace Perzeptron
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Bitmap gridImage = new Bitmap(screenshot, new Size(GRID_SIZE, GRID_SIZE));
+            Bitmap gridImage = new Bitmap(screenshot, new Size(gridSize, gridSize));
             PrintBitmap(gridImage);
-
-            /*modeImage.Image = gridImage;
-            Bitmap binImage = BinarizationImage(gridImage);
-            modeImage.Image = binImage;*/
 
             gridG = ImageToGrid(gridImage);
             PrintGrid(gridG);
@@ -224,9 +217,16 @@ namespace Perzeptron
                 prevPoint = currentPoint;
                 currentPoint = e.Location;
 
-                DrawImagePixel(prevPoint.X, prevPoint.Y);
+                label1.Text = currentPoint.ToString();
 
-                pictureBox1.Image = screenshot;
+                if ((currentPoint.X > (0   + penWidth)) &&
+                    (currentPoint.X < (100 - penWidth)) &&
+                    (currentPoint.Y > (0   + penWidth)) && 
+                    (currentPoint.Y < (100 - penWidth)))
+                {
+                    DrawImagePixel(prevPoint.X, prevPoint.Y);
+                    pictureBox1.Image = screenshot;
+                }
             }
         }
 
@@ -239,8 +239,7 @@ namespace Perzeptron
         {
             if (printWeightButton.Text == "Print Weight")
             {
-                //gridLable.Visible = false;
-                weightLable.Text = perNetWork.PrintWeight();
+                weightLable.Text = perNetWork.ToString();
                 weightLable.Visible = true;
                 printWeightButton.Text = "Print Grid";
             }
@@ -255,13 +254,13 @@ namespace Perzeptron
         private void button3_Click(object sender, EventArgs e)
         {
             perNetWork.IncWeight(gridG);
-            weightLable.Text = perNetWork.PrintWeight();
+            weightLable.Text = perNetWork.ToString();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             perNetWork.DecWeight(gridG);
-            weightLable.Text = perNetWork.PrintWeight();
+            weightLable.Text = perNetWork.ToString();
         }
     }
 }
